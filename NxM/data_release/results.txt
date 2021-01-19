@@ -1,0 +1,16 @@
+CPU naive    Computation took: 35.548 ms
+CPU Algorithm Computation took: 35.481 ms
+GPU improved Computation took: 35.178 ms.
+
+CPU naive    Computation took: 72.929 ms
+CPU Algorithm Computation took: 71.045 ms
+GPU improved Computation took: 68.5322 ms.
+
+CPU naive    Computation took: 145.182 ms
+CPU Algorithm Computation took: 141.946 ms
+GPU improved Computation took: 121.435 ms.
+
+CPU naive    Computation took: 293.301 ms
+CPU Algorithm Computation took: 288.062 ms
+GPU improved Computation took: 240.497 ms.
+
