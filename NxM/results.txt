@@ -1,0 +1,27 @@
+CPU naive    Computation took: 2233.8 ms
+CPU Algorithm Computation took: 1235.5 ms
+GPU improved Computation took: 570.465 ms.
+
+CPU naive    Computation took: 4280.4 ms
+CPU Algorithm Computation took: 2452.63 ms
+GPU improved Computation took: 1060.76 ms.
+
+CPU naive    Computation took: 8562.95 ms
+CPU Algorithm Computation took: 4911.43 ms
+GPU improved Computation took: 2067.43 ms.
+
+CPU naive    Computation took: 4181.64 ms
+CPU Algorithm Computation took: 2377.85 ms
+GPU improved Computation took: 1039.06 ms.
+Solutions are matching
+
+CPU naive    Computation took: 2099.22 ms
+CPU Algorithm Computation took: 1173.56 ms
+GPU improved Computation took: 560.176 ms.
+Solutions are matching
+
+CPU naive    Computation took: 8313.03 ms
+CPU Algorithm Computation took: 4657.62 ms
+GPU improved Computation took: 2071.14 ms.
+Solutions are matching
+
