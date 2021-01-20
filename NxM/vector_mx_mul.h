@@ -3,7 +3,7 @@
 
 
 const int M = 256;
-const int N = 4*256 * 1024;
+const int N = 2*256 * 1024;
 
 void vector_mx_naive(std::vector<float>& C, std::vector<float> const& vec, std::vector<float> const& mx)
 {

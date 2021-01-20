@@ -31,6 +31,21 @@ __global__ void mx_vec_gpu(float* result_mx, float* input_vector, float* input_m
     result_mx[y] = sum;
 }
 
+
+
+__global__ void mx_vec_gpu_naive(float* result_mx, float* input_vector, float* input_mx)
+{
+    unsigned int y = blockIdx.y * blockDim.y + threadIdx.y;
+    float sum = 0;
+    for (int i = 0; i < N; i++)
+    {
+        sum += input_vector[i] * input_mx[y * N + i];
+    }
+    result_mx[y] = sum;
+}
+
+
+
 float do_Cuda(std::vector<float>& A, std::vector<float>& B, std::vector<float>& C2)
 {
 
@@ -63,6 +78,61 @@ float do_Cuda(std::vector<float>& A, std::vector<float>& B, std::vector<float>& 
         dim3 dimBlock(block_sz, block_sz);
         cudaEventRecord(evt[0]);
         mx_vec_gpu << <dimGrid, dimBlock >> > (pC2, pA, pB);
+        err = cudaGetLastError();
+        if (err != cudaSuccess) { std::cout << "CUDA error in kernel call: " << cudaGetErrorString(err) << "\n"; return -1; }
+        cudaEventRecord(evt[1]);
+    }
+    err = cudaMemcpy(C2.data(), pC2, M * sizeof(float), cudaMemcpyDeviceToHost);
+    if (err != cudaSuccess) { std::cout << "Error copying memory to host: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    err = cudaFree(pA);
+    if (err != cudaSuccess) { std::cout << "Error freeing allocation: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    err = cudaFree(pB);
+    if (err != cudaSuccess) { std::cout << "Error freeing allocation: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    err = cudaFree(pC2);
+    if (err != cudaSuccess) { std::cout << "Error freeing allocation: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    cudaEventSynchronize(evt[1]);
+    float dt = 0.0f;//milliseconds
+    cudaEventElapsedTime(&dt, evt[0], evt[1]);
+    for (auto& e : evt) { cudaEventDestroy(e); }
+    return dt;
+}
+
+float do_Cuda_naive(std::vector<float>& A, std::vector<float>& B, std::vector<float>& C2)
+{
+
+    float* pA = nullptr;
+    float* pB = nullptr;
+    float* pC2 = nullptr;
+
+    cudaEvent_t evt[2];
+    for (auto& e : evt) { cudaEventCreate(&e); }
+
+    cudaError_t err = cudaSuccess;
+
+    err = cudaMalloc((void**)&pA, N * sizeof(float));
+    if (err != cudaSuccess) { std::cout << "Error allocating CUDA memory: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    err = cudaMalloc((void**)&pB, N * M * sizeof(float));
+    if (err != cudaSuccess) { std::cout << "Error allocating CUDA memory: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    err = cudaMalloc((void**)&pC2, M * sizeof(float));
+    if (err != cudaSuccess) { std::cout << "Error allocating CUDA memory: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    err = cudaMemcpy(pA, A.data(), N * sizeof(float), cudaMemcpyHostToDevice);
+    if (err != cudaSuccess) { std::cout << "Error copying memory to device: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    err = cudaMemcpy(pB, B.data(), N * M * sizeof(float), cudaMemcpyHostToDevice);
+    if (err != cudaSuccess) { std::cout << "Error copying memory to device: " << cudaGetErrorString(err) << "\n"; return -1; }
+
+    {
+        dim3 dimGrid(n_blocks, n_blocks);
+        dim3 dimBlock(block_sz, block_sz);
+        cudaEventRecord(evt[0]);
+        mx_vec_gpu_naive << <dimGrid, dimBlock >> > (pC2, pA, pB);
         err = cudaGetLastError();
         if (err != cudaSuccess) { std::cout << "CUDA error in kernel call: " << cudaGetErrorString(err) << "\n"; return -1; }
         cudaEventRecord(evt[1]);

@@ -15,7 +15,7 @@ const int n_blocks = M / MBS;
 const float max_err = 1e-5f;
 
 
-void fill_values(std::vector<float>& A, std::vector<float>& B, std::vector<float>& C0, std::vector<float>& C1, std::vector<float>& C2)
+void fill_values(std::vector<float>& A, std::vector<float>& B, std::vector<float>& C0, std::vector<float>& C1, std::vector<float>& C2,std::vector<float>& C3)
 {
     // Random number generator
     std::mt19937 mersenne_engine{ 42 };  // Generates random integers
@@ -30,10 +30,11 @@ void fill_values(std::vector<float>& A, std::vector<float>& B, std::vector<float
     std::fill(C0.begin(), C0.end(), 0.0f);
     std::fill(C1.begin(), C1.end(), 0.0f);
     std::fill(C2.begin(), C2.end(), 0.0f);
+    std::fill(C3.begin(), C3.end(), 0.0f);
 }
 
 
-void checker(std::vector<float>  ref_1, std::vector<float> ref_2, std::string err_name, std::string T1, std::string T2)
+int checker(std::vector<float>  ref_1, std::vector<float> ref_2, std::string err_name, std::string T1, std::string T2)
 {
     auto comparator = [](float l, float r) { return std::abs(l - r) < max_err; };
 
@@ -42,6 +43,7 @@ void checker(std::vector<float>  ref_1, std::vector<float> ref_2, std::string er
         if (!comparator(ref_1[i], ref_2[i]))
         {
             std::cout << err_name << "[" << i << "] : " << ref_1[i] << "   " << ref_2[i] << " absolute error: " << std::abs(ref_1[i] - ref_2[i]) << "\n";
+            return -1;
         }
     }
 
@@ -52,5 +54,7 @@ void checker(std::vector<float>  ref_1, std::vector<float> ref_2, std::string er
     else
     {
         std::cout << "Mismatch in the " << T1 << " and " << T2 << "\n";
+        return -1;
     }
+    return 0;
 }
