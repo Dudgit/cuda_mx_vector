@@ -15,7 +15,7 @@ const int n_blocks = M / MBS;
 const float max_err = 1e-5f;
 
 
-void fill_values(std::vector<float>& A, std::vector<float>& B, std::vector<float>& C0, std::vector<float>& C1, std::vector<float>& C2,std::vector<float>& C3)
+void fill_values(std::vector<float>& A, std::vector<float>& B, std::vector<float>& C0, std::vector<float>& C1, std::vector<float>& C2,std::vector<float>& C3, std::vector<float>& C4)
 {
     // Random number generator
     std::mt19937 mersenne_engine{ 42 };  // Generates random integers
@@ -26,11 +26,12 @@ void fill_values(std::vector<float>& A, std::vector<float>& B, std::vector<float
     generate(A.begin(), A.end(), gen);
     generate(B.begin(), B.end(), gen);
 
-    //Fill C0,C1,C2 with 0
+    //Fill with 0
     std::fill(C0.begin(), C0.end(), 0.0f);
     std::fill(C1.begin(), C1.end(), 0.0f);
     std::fill(C2.begin(), C2.end(), 0.0f);
     std::fill(C3.begin(), C3.end(), 0.0f);
+    std::fill(C4.begin(), C4.end(), 0.0f);
 }
 
 
